@@ -196,7 +196,7 @@ class AddPriorityTaskFragment: Fragment() {
                 category,startDate,endDate,startTime,endTime,priority,list)
 
             val alarmIntent = Intent(requireContext(), NotificationReceiver::class.java)
-            alarmIntent.putExtra("title", newTask.category)
+            alarmIntent.putExtra("title", newTask.category.toString())
             alarmIntent.putExtra("description", newTask.name)
             val pendingIntent = PendingIntent.getBroadcast(
                 requireContext(),

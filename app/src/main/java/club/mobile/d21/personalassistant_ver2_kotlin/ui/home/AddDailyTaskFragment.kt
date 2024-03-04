@@ -21,9 +21,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-interface CallBack{
-    fun add(dailyTask: DailyTask)
-}
 class AddDailyTaskFragment: Fragment() {
     private var _binding: FragmentAddDailyTaskBinding? = null
     private val binding get() = _binding!!
@@ -40,13 +37,13 @@ class AddDailyTaskFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var selectedTime: LocalTime = LocalTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
         binding.chooseTime.setOnClickListener {
             val currentTime = LocalTime.now()
             val timePickerDialog = TimePickerDialog(
                 requireContext(),
                 { _, hours, minutes ->
                     selectedTime = LocalTime.of(hours,minutes)
-                    val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
                     binding.chooseTime.text = selectedTime.format(formatter)
                 },
                 currentTime.hour,
@@ -71,12 +68,10 @@ class AddDailyTaskFragment: Fragment() {
                 alarmIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-            val taskHour = newTask.time.hour
-            val taskMinute = newTask.time.minute
-
+            selectedTime = LocalTime.parse(binding.chooseTime.text.toString(),formatter)
             val calendar = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, taskHour)
-                set(Calendar.MINUTE, taskMinute)
+                set(Calendar.HOUR_OF_DAY, selectedTime.hour)
+                set(Calendar.MINUTE, selectedTime.minute)
                 set(Calendar.SECOND, 0)
             }
             val alarmManager =
